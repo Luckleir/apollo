@@ -1,5 +1,6 @@
 "use client";
 
+import { Projeto } from "@/demo/service/ProductService";
 import type { Demo } from "@/types";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
@@ -29,7 +30,7 @@ const Crud = () => {
         email: "",
     };
 
-    const [usuarios, setUsuarios] = useState(null);
+    const [usuarios, setUsuarios] = useState([]);
     const [usuarioDialog, setUsuarioDialog] = useState(false);
     const [deleteUsuarioDialog, setDeleteUsuarioDialog] = useState(false);
     const [deleteUsuariosDialog, setDeleteUsuariosDialog] = useState(false);
@@ -43,7 +44,6 @@ const Crud = () => {
     useEffect(() => {
         //ProductService.getProducts().then((data) => setProducts(data));
     }, []);
-
 
     const openNew = () => {
         setUsuario(usuarioVazio);
@@ -67,39 +67,39 @@ const Crud = () => {
     const saveUsuario = () => {
         setSubmitted(true);
 
-        // if (product.name.trim()) {
-        //     let _products = [...products];
-        //     let _product = { ...product };
-        //     if (product.id) {
-        //         const index = findIndexById(product.id);
-        //
-        //         _products[index] = _product;
-        //         toast.current?.show({
-        //             severity: "success",
-        //             summary: "Successful",
-        //             detail: "Product Updated",
-        //             life: 3000,
-        //         });
-        //     } else {
-        //         _product.id = createId();
-        //         _product.code = createId();
-        //         _product.image = "product-placeholder.svg";
-        //         _products.push(_product);
-        //         toast.current?.show({
-        //             severity: "success",
-        //             summary: "Successful",
-        //             detail: "Product Created",
-        //             life: 3000,
-        //         });
-        //     }
+        if (usuario.nome.trim()) {
+            let _usuarios = [...usuarios];
+            let _usuario = { ...usuario };
+            // if (usuario.id) {
+            //     const index = findIndexById(usuario.id);
 
-            // setProducts(_products);
-            // setProductDialog(false);
-        //     // setProduct(emptyProduct);
-        // }
+            //     _usuarios[index] = _usuario;
+            //     toast.current?.show({
+            //         severity: "success",
+            //         summary: "Successful",
+            //         detail: "Product Updated",
+            //         life: 3000,
+            //     });
+            // } else {
+            //     _usuario.id = createId();
+            //     _usuario.code = createId();
+            //     _usuario.image = "product-placeholder.svg";
+            //     _usuarios.push(_usuario);
+            //     toast.current?.show({
+            //         severity: "success",
+            //         summary: "Successful",
+            //         detail: "Product Created",
+            //         life: 3000,
+            //     });
+            // }
+
+            setUsuarios(_usuarios);
+            setUsuarioDialog(false);
+            setUsuario(usuarioVazio);
+        }
     };
 
-    const editUsuario= (usuario: Projeto.Usuario) => {
+    const editUsuario = (usuario: Projeto.Usuario) => {
         setUsuario({ ...usuario });
         setUsuarioDialog(true);
     };
@@ -109,18 +109,20 @@ const Crud = () => {
         setDeleteUsuarioDialog(true);
     };
 
-    // const deleteUsuario = () => {
-    //     let _usuarios = usuario.filter((val) => val.id !== usuario.id);
-    //     setUsarios(_usuarios);
-    //     setDeleteUsuarioDialog(false);
-    //     setUsuario(emptyUsuario);
-    //     toast.current?.show({
-    //         severity: "success",
-    //         summary: "Successful",
-    //         detail: "Product Deleted",
-    //         life: 3000,
-    //     });
-    // };
+    const deleteUsuario = () => {
+        let _usuarios = usuarios.filter(
+            (val: { id: number | undefined }) => val.id !== usuario.id
+        );
+        setUsuarios(_usuarios);
+        setDeleteUsuarioDialog(false);
+        setUsuario(usuarioVazio);
+        toast.current?.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "Product Deleted",
+            life: 3000,
+        });
+    };
 
     // const findIndexById = (id: string) => {
     //     let index = -1;
@@ -175,12 +177,11 @@ const Crud = () => {
 
     const onInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-        nome: string
+        nome: CamposEditaveis
     ) => {
-        const val = (e.target && e.target.value) || "";
+        const val = e.target.value || "";
         let _usuario = { ...usuario };
-        _usuario[`${nome}`] = val;
-
+        _usuario[nome] = val; // OK agora, pois só são campos do tipo string
         setUsuario(_usuario);
     };
 
@@ -211,7 +212,10 @@ const Crud = () => {
                         icon="pi pi-trash"
                         severity="danger"
                         onClick={confirmDeleteSelected}
-                        disabled={!selectedUsuarios || !(selectedUsuarios as any).length}
+                        disabled={
+                            !selectedUsuarios ||
+                            !(selectedUsuarios as any).length
+                        }
                     />
                 </div>
             </React.Fragment>
@@ -436,7 +440,6 @@ const Crud = () => {
                         footer={usuarioDialogFooter}
                         onHide={hideDialog}
                     >
-
                         <div className="field">
                             <label htmlFor="nome">Nome</label>
                             <InputText
@@ -512,7 +515,6 @@ const Crud = () => {
                                 </small>
                             )}
                         </div>
-
                     </Dialog>
 
                     <Dialog
@@ -552,7 +554,8 @@ const Crud = () => {
                             />
                             {usuario && (
                                 <span>
-                                    Você tem realmente deseja excluir os usuários selecionados?
+                                    Você tem realmente deseja excluir os
+                                    usuários selecionados?
                                 </span>
                             )}
                         </div>
