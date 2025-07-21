@@ -1,6 +1,6 @@
 import type { Demo } from "@/types";
 
-export const ProductService = {
+export const Projeto = {
     getProductsSmall() {
         return fetch("/demo/data/products-small.json", {
             headers: { "Cache-Control": "no-cache" },
